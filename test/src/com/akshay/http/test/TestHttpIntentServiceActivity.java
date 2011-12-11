@@ -1,7 +1,8 @@
-package com.akshay.http;
+package com.akshay.http.test;
 
 import java.io.IOException;
 
+import com.akshay.http.R;
 import com.akshay.http.service.ResultHandler;
 import com.akshay.http.service.SyncService;
 import com.akshay.http.service.builders.ServiceIntentBuilder;
@@ -16,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class TestActivity extends Activity {
+public class TestHttpIntentServiceActivity extends Activity {
 
     private static final String URL = "https://api.twitter.com/1/statuses/public_timeline.json";
 
@@ -81,7 +82,7 @@ public class TestActivity extends Activity {
     private void handleResult(int resultCode, byte[] result) {
         switch (resultCode) {
         case HttpStatusCodes.GATEWAY_TIMEOUT:
-            Toast.makeText(TestActivity.this, "Limited or no internet connectivity!", Toast.LENGTH_LONG).show();
+            Toast.makeText(TestHttpIntentServiceActivity.this, "Limited or no internet connectivity!", Toast.LENGTH_LONG).show();
             break;
         }
 
