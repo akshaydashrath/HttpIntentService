@@ -5,13 +5,14 @@ import java.io.IOException;
 import com.akshay.http.service.ResultHandler;
 import com.akshay.http.service.SyncService;
 import com.akshay.http.service.builders.ServiceIntentBuilder;
+import com.akshay.http.service.constants.HttpStatusCodes;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class TestActivity extends Activity {
 
@@ -26,18 +27,27 @@ public class TestActivity extends Activity {
 
         @Override
         public void onSuccess(byte[] result) throws IOException {
-            Log.i("XXX", "Success! = " + getStringFromArray(result));
             image.setImageBitmap(getBitmap(result));
         }
 
         @Override
         public void onError(int resultCode, byte[] result) {
-            Log.i("XXX", "Error = " + getStringFromArray(result));
+            handleResult(resultCode, result);
         }
 
         @Override
         public void onFailure(int resultCode, Exception e) {
             e.printStackTrace();
+            handleResult(resultCode, null);
+        }
+        
+        private void handleResult(int resultCode, byte[] result){
+                switch (resultCode){
+                case HttpStatusCodes.GATEWAY_TIMEOUT:
+                    Toast.makeText(TestActivity.this, "Limited or no internet connectivity!", Toast.LENGTH_LONG).show();
+                    break;
+                }
+            
         }
     };
 
