@@ -12,6 +12,8 @@ import android.util.Log;
 
 public class TestActivity extends Activity {
 
+    //private static final String URL = "https://api.twitter.com/1/statuses/public_timeline.json?count=3&include_entities=true";
+    
     private ResultReceiver resultreceiver = new ResultReceiver(null) {
         @Override
         protected void onReceiveResult(int resultCode, Bundle resultData) {
@@ -24,8 +26,8 @@ public class TestActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        Uri uri = Uri.parse("https://api.twitter.com/1/statuses/public_timeline.json?count=3&include_entities=true");
-        Intent intent = new IntentBuilder(this).setData(uri).setHttpType(SyncService.SERVICE_TYPE_GET).setResultReceiver(resultreceiver).build();
+        Uri uri = Uri.parse("https://api.twitter.com/1/statuses/public_timeline.json");
+        Intent intent = new IntentBuilder(this).setData(uri).setHttpType(SyncService.SERVICE_TYPE_GET).withParam("count", "3").withParam("include_entities", "true").setResultReceiver(resultreceiver).build();
         startService(intent);
     }
 }

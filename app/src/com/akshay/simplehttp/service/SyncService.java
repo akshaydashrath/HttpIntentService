@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.util.Log;
 
 public class SyncService extends IntentService {
 
@@ -46,6 +47,9 @@ public class SyncService extends IntentService {
     }
 
     private Bundle doGetServiceCall(Uri uri, Bundle bundle, Intent intent) throws IOException {
+        String param = intent.getStringExtra(IntentBuilder.SYNC_INTENT_EXTRA_PARAM);
+        uri = uri.buildUpon().appendEncodedPath(param).build();
+        Log.i("XXX", "Url = " + uri);
         URL url = new URL(uri.toString());
         HttpURLConnection urlConnection = getHttpUrlConnection(url);
         urlConnection.setRequestMethod(HTTP_GET);

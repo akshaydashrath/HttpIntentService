@@ -39,7 +39,7 @@ public class IntentBuilder {
             } else {
                 extra = extra + "&" + key + "=" + URLEncoder.encode(value,"UTF-8");
             }
-            intent.putExtra(SYNC_INTENT_EXTRA_PARAM, value);
+            intent.putExtra(SYNC_INTENT_EXTRA_PARAM, extra);
         } catch (Exception e){
             e.printStackTrace();
         }
