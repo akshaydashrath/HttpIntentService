@@ -1,8 +1,8 @@
-package com.akshay.simplehttp.service.builders;
+package com.akshay.http.service.builders;
 
 import java.net.URLEncoder;
 
-import com.akshay.simplehttp.service.SyncService;
+import com.akshay.http.service.SyncService;
 
 import android.app.Activity;
 import android.content.Intent;

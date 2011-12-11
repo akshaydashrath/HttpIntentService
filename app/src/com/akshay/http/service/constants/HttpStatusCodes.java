@@ -1,4 +1,4 @@
-package com.akshay.simplehttp.service.constants;
+package com.akshay.http.service.constants;
 
 public class HttpStatusCodes {
     

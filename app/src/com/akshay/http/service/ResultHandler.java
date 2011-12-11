@@ -1,4 +1,4 @@
-package com.akshay.simplehttp.service;
+package com.akshay.http.service;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,8 +8,8 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 
-import com.akshay.simplehttp.service.constants.HttpStatusCodes;
-import com.akshay.simplehttp.service.utils.ServiceUtilities;
+import com.akshay.http.service.constants.HttpStatusCodes;
+import com.akshay.http.service.utils.ServiceUtilities;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

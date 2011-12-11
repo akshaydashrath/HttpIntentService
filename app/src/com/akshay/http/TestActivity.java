@@ -1,10 +1,10 @@
-package com.akshay.simplehttp;
+package com.akshay.http;
 
 import java.io.IOException;
 
-import com.akshay.simplehttp.service.ResultHandler;
-import com.akshay.simplehttp.service.SyncService;
-import com.akshay.simplehttp.service.builders.ServiceIntentBuilder;
+import com.akshay.http.service.ResultHandler;
+import com.akshay.http.service.SyncService;
+import com.akshay.http.service.builders.ServiceIntentBuilder;
 
 import android.app.Activity;
 import android.content.Intent;

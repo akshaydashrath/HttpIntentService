@@ -1,4 +1,4 @@
-package com.akshay.simplehttp.service;
+package com.akshay.http.service;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,9 +10,9 @@ import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
 
-import com.akshay.simplehttp.service.builders.ServiceIntentBuilder;
-import com.akshay.simplehttp.service.constants.HttpStatusCodes;
-import com.akshay.simplehttp.service.utils.ServiceUtilities.NetworkAvailabilityCallback;
+import com.akshay.http.service.builders.ServiceIntentBuilder;
+import com.akshay.http.service.constants.HttpStatusCodes;
+import com.akshay.http.service.utils.ServiceUtilities.NetworkAvailabilityCallback;
 
 import android.app.IntentService;
 import android.content.Context;

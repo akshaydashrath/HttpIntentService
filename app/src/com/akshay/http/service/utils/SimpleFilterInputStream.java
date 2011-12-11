@@ -1,4 +1,4 @@
-package com.akshay.simplehttp.service.utils;
+package com.akshay.http.service.utils;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
