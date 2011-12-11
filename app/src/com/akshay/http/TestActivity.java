@@ -12,22 +12,22 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class TestActivity extends Activity {
 
-    // private static final String URL =
-    // "https://api.twitter.com/1/statuses/public_timeline.json?count=3&include_entities=true";
-    
-    private static final String URL = "http://www.android.com/media/wallpaper/gif/android_logo.gif";
-    
-    private ImageView image; 
+    private static final String URL = "https://api.twitter.com/1/statuses/public_timeline.json";
 
-    private ResultHandler resultHandler = new ResultHandler() {
+    private static final String IMAGE_URL = "http://www.android.com/media/wallpaper/gif/android_logo.gif";
 
+    private ImageView image;
+    private TextView text;
+
+    private ResultHandler textHandler = new ResultHandler() {
         @Override
-        public void onSuccess(byte[] result) throws IOException {
-            image.setImageBitmap(getBitmap(result));
+        public void onSuccess(byte[] array) throws IOException {
+            text.setText(getStringFromArray(array));
         }
 
         @Override
@@ -37,29 +37,51 @@ public class TestActivity extends Activity {
 
         @Override
         public void onFailure(int resultCode, Exception e) {
-            e.printStackTrace();
             handleResult(resultCode, null);
         }
-        
-        private void handleResult(int resultCode, byte[] result){
-                switch (resultCode){
-                case HttpStatusCodes.GATEWAY_TIMEOUT:
-                    Toast.makeText(TestActivity.this, "Limited or no internet connectivity!", Toast.LENGTH_LONG).show();
-                    break;
-                }
-            
-        }
+
     };
 
-      @Override
+    private ResultHandler imageHandler = new ResultHandler() {
+        @Override
+        public void onSuccess(byte[] array) throws IOException {
+            image.setImageBitmap(getBitmap(array));
+        }
+
+        @Override
+        public void onError(int resultCode, byte[] result) {
+            handleResult(resultCode, result);
+        }
+
+        @Override
+        public void onFailure(int resultCode, Exception e) {
+            handleResult(resultCode, null);
+        }
+
+    };
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        image  = (ImageView)findViewById(R.id.image);
-        Uri uri = Uri.parse(URL);
-        Intent intent = new ServiceIntentBuilder(this).setData(uri).setHttpType(SyncService.SERVICE_TYPE_GET)
-               // .withParam("count", "3").withParam("include_entities", "true")
-                .setResultReceiver(resultHandler.getResultReceiver()).build();
+        image = (ImageView) findViewById(R.id.image);
+        text = (TextView) findViewById(R.id.text);
+        Uri textUri = Uri.parse(URL);
+        Uri imageUri = Uri.parse(IMAGE_URL);
+        Intent intent = new ServiceIntentBuilder(this).setData(textUri).setHttpType(SyncService.SERVICE_TYPE_GET)
+                .withParam("count", "3").withParam("include_entities", "true").setResultReceiver(textHandler).build();
         startService(intent);
+        Intent intent2 = new ServiceIntentBuilder(this).setData(imageUri).setHttpType(SyncService.SERVICE_TYPE_GET)
+                .setResultReceiver(imageHandler).build();
+        startService(intent2);
+    }
+
+    private void handleResult(int resultCode, byte[] result) {
+        switch (resultCode) {
+        case HttpStatusCodes.GATEWAY_TIMEOUT:
+            Toast.makeText(TestActivity.this, "Limited or no internet connectivity!", Toast.LENGTH_LONG).show();
+            break;
+        }
+
     }
 }
