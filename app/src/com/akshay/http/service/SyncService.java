@@ -131,7 +131,7 @@ public class SyncService extends IntentService {
         final Uri uri = intent.getData();
         hasActiveInternetConnection(new NetworkAvailabilityCallback() {
             @Override
-            public void isAvailable(boolean flag) {
+            public void isNetworkAvailable(boolean flag) {
                 if (flag) {
                     try {
                         Bundle response = doServiceCall(uri, serviceType, new Bundle(), intent);
@@ -169,15 +169,15 @@ public class SyncService extends IntentService {
                         urlc.setConnectTimeout(CONN_TIMEOUT);
                         urlc.connect();
                         if (urlc.getResponseCode() == HttpStatusCodes.OK) {
-                            callback.isAvailable(true);
+                            callback.isNetworkAvailable(true);
                         } else {
-                            callback.isAvailable(false);
+                            callback.isNetworkAvailable(false);
                         }
                     } catch (IOException e) {
-                        callback.isAvailable(false);
+                        callback.isNetworkAvailable(false);
                     }
                 } else {
-                    callback.isAvailable(false);
+                    callback.isNetworkAvailable(false);
                 }
             }
         }).start();

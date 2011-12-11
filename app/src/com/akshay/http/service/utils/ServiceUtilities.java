@@ -16,7 +16,7 @@ public class ServiceUtilities {
     }
     
     public interface NetworkAvailabilityCallback{
-        public void isAvailable(boolean flag);
+        public void isNetworkAvailable(boolean flag);
     }
 
 }
