@@ -8,6 +8,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 
+import com.akshay.simplehttp.service.constants.HttpStatusCodes;
 import com.akshay.simplehttp.service.utils.ServiceUtilities;
 
 import android.graphics.Bitmap;
@@ -18,8 +19,6 @@ import android.os.ResultReceiver;
 
 public abstract class ResultHandler {
 
-    private static final int RESULT_OK = 200;
-
     private final ResultReceiver receiver;
 
     public ResultHandler() {
@@ -28,15 +27,15 @@ public abstract class ResultHandler {
             protected void onReceiveResult(int resultCode, Bundle resultData) {
                 try {
                     switch (resultCode) {
-                    case RESULT_OK:
+                    case HttpStatusCodes.OK:
                         onSuccess(resultData.getByteArray(SyncService.SERVICE_RESPONSE));
                         break;
                     default:
-                        onError(resultData.getByteArray(SyncService.SERVICE_RESPONSE));
+                        onError(resultCode, resultData.getByteArray(SyncService.SERVICE_RESPONSE));
                         break;
                     }
                 } catch (Exception e) {
-                    onFailure(e);
+                    onFailure(resultCode, e);
                 }
             }
         };
@@ -65,8 +64,8 @@ public abstract class ResultHandler {
 
     public abstract void onSuccess(byte[] bs) throws Exception;
 
-    public abstract void onError(byte[] bs) throws Exception;
+    public abstract void onError(int resultCode, byte[] bs) throws Exception;
 
-    public abstract void onFailure(Exception e);
+    public abstract void onFailure(int resultCode, Exception e);
 
 }

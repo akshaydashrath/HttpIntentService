@@ -11,9 +11,14 @@ import java.net.URL;
 import org.apache.commons.io.IOUtils;
 
 import com.akshay.simplehttp.service.builders.ServiceIntentBuilder;
+import com.akshay.simplehttp.service.constants.HttpStatusCodes;
+import com.akshay.simplehttp.service.utils.ServiceUtilities.NetworkAvailabilityCallback;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,7 +27,7 @@ import android.text.TextUtils;
 
 public class SyncService extends IntentService {
 
-    private static final String TAG = "SyncService";
+    public static final String SYNC_SERVICE_TAG = "SyncService";
 
     public static final int SERVICE_TYPE_GET = 0;
     public static final int SERVICE_TYPE_POST = 1;
@@ -36,8 +41,10 @@ public class SyncService extends IntentService {
     public static final String SERVICE_RESPONSE = "service_response";
     private static final String SERVICE_RESPONSE_CODE = "service_response_code";
 
+    protected static final String TEST_URL = "http://www.google.com";
+
     public SyncService() {
-        super(TAG);
+        super(SYNC_SERVICE_TAG);
     }
 
     @Override
@@ -70,6 +77,7 @@ public class SyncService extends IntentService {
         HttpURLConnection urlConnection = getHttpUrlConnection(url);
         try {
             urlConnection.setDoOutput(true);
+            urlConnection.setChunkedStreamingMode(0);
             urlConnection.setRequestMethod(HTTP_POST);
             OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
             wr.write(param);
@@ -86,7 +94,7 @@ public class SyncService extends IntentService {
     }
 
     private Bundle copyStreamToBundle(InputStream in, Bundle bundle) throws IOException {
-        bundle.putByteArray(SERVICE_RESPONSE,  IOUtils.toByteArray(in));
+        bundle.putByteArray(SERVICE_RESPONSE, IOUtils.toByteArray(in));
         return bundle;
     }
 
@@ -94,6 +102,7 @@ public class SyncService extends IntentService {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setReadTimeout(READ_TIMEOUT);
         urlConnection.setConnectTimeout(CONN_TIMEOUT);
+        urlConnection.setInstanceFollowRedirects(true);
         return urlConnection;
     }
 
@@ -116,16 +125,26 @@ public class SyncService extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void onHandleIntent(final Intent intent) {
         final ResultReceiver receiver = intent.getParcelableExtra(ServiceIntentBuilder.SYNC_INTENT_EXTRA_RECEIVER);
-        int serviceType = intent.getIntExtra(ServiceIntentBuilder.SYNC_INTENT_EXTRA_SERVICE_TYPE, 0);
-        Uri uri = intent.getData();
-        try {
-            Bundle response = doServiceCall(uri, serviceType, new Bundle(), intent);
-            receiver.send(response.getInt(SERVICE_RESPONSE_CODE), response);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        final int serviceType = intent.getIntExtra(ServiceIntentBuilder.SYNC_INTENT_EXTRA_SERVICE_TYPE, 0);
+        final Uri uri = intent.getData();
+        hasActiveInternetConnection(new NetworkAvailabilityCallback() {
+            @Override
+            public void isAvailable(boolean flag) {
+                if (flag) {
+                    try {
+                        Bundle response = doServiceCall(uri, serviceType, new Bundle(), intent);
+                        receiver.send(response.getInt(SERVICE_RESPONSE_CODE), response);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        receiver.send(HttpStatusCodes.GATEWAY_TIMEOUT, null);
+                    }
+                } else {
+                    receiver.send(HttpStatusCodes.GATEWAY_TIMEOUT, null);
+                }
+            }
+        });
     }
 
     private Bundle doServiceCall(Uri uri, int serviceType, Bundle bundle, Intent intent) throws IOException {
@@ -137,6 +156,37 @@ public class SyncService extends IntentService {
         default:
             return bundle;
         }
+    }
+
+    private void hasActiveInternetConnection(final NetworkAvailabilityCallback callback) {
+        new Thread(new Runnable() {
+            public void run() {
+                if (isNetworkAvailable()) {
+                    try {
+                        HttpURLConnection urlc = (HttpURLConnection) (new URL(TEST_URL).openConnection());
+                        urlc.setRequestProperty("User-Agent", "Test");
+                        urlc.setRequestProperty("Connection", "close");
+                        urlc.setConnectTimeout(CONN_TIMEOUT);
+                        urlc.connect();
+                        if (urlc.getResponseCode() == HttpStatusCodes.OK) {
+                            callback.isAvailable(true);
+                        } else {
+                            callback.isAvailable(false);
+                        }
+                    } catch (IOException e) {
+                        callback.isAvailable(false);
+                    }
+                } else {
+                    callback.isAvailable(false);
+                }
+            }
+        }).start();
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
     }
 
 }

@@ -31,18 +31,15 @@ public class TestActivity extends Activity {
         }
 
         @Override
-        public void onError(byte[] result) {
+        public void onError(int resultCode, byte[] result) {
             Log.i("XXX", "Error = " + getStringFromArray(result));
         }
 
         @Override
-        public void onFailure(Exception e) {
+        public void onFailure(int resultCode, Exception e) {
             e.printStackTrace();
         }
-
     };
-
-
 
       @Override
     public void onCreate(Bundle savedInstanceState) {

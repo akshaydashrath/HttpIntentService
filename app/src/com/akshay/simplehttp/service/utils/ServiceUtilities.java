@@ -1,6 +1,8 @@
 package com.akshay.simplehttp.service.utils;
 
+
 import org.codehaus.jackson.map.ObjectMapper;
+
 
 public class ServiceUtilities {
 
@@ -11,6 +13,10 @@ public class ServiceUtilities {
             objectMapper = new ObjectMapper();
         }
         return objectMapper;
+    }
+    
+    public interface NetworkAvailabilityCallback{
+        public void isAvailable(boolean flag);
     }
 
 }
