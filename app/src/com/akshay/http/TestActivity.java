@@ -9,6 +9,7 @@ import com.akshay.http.service.constants.HttpStatusCodes;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -45,7 +46,8 @@ public class TestActivity extends Activity {
     private ResultHandler imageHandler = new ResultHandler() {
         @Override
         public void onSuccess(byte[] array) throws IOException {
-            image.setImageBitmap(getBitmap(array));
+            Bitmap bitmap = getBitmap(array).get();
+            image.setImageBitmap(bitmap);
         }
 
         @Override

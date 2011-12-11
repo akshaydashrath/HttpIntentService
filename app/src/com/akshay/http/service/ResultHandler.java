@@ -2,6 +2,7 @@ package com.akshay.http.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.JsonNode;
@@ -51,9 +52,8 @@ public abstract class ResultHandler extends ResultReceiver {
         return IOUtils.toInputStream(getStringFromArray(array));
     }
 
-    public Bitmap getBitmap(byte[] result) {
-        return BitmapFactory.decodeByteArray(result, 0, result.length);
-
+    public WeakReference<Bitmap>getBitmap(byte[] result) {
+        return new WeakReference<Bitmap>(BitmapFactory.decodeByteArray(result, 0, result.length));
     }
     
     public abstract void onSuccess(byte[] bs) throws Exception;
