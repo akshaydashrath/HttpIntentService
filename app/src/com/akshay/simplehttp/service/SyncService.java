@@ -1,15 +1,16 @@
 package com.akshay.simplehttp.service;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+
+import org.apache.commons.io.IOUtils;
+
+import com.akshay.simplehttp.service.builders.ServiceIntentBuilder;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.text.TextUtils;
 
 public class SyncService extends IntentService {
 
@@ -46,13 +48,13 @@ public class SyncService extends IntentService {
     }
 
     private Bundle doGetServiceCall(Uri uri, Bundle bundle, Intent intent) throws IOException {
-        String param = intent.getStringExtra(IntentBuilder.SYNC_INTENT_EXTRA_PARAM);
-        uri = uri.buildUpon().appendEncodedPath(param).build();
+        String param = intent.getStringExtra(ServiceIntentBuilder.SYNC_INTENT_EXTRA_PARAM);
+        uri = (TextUtils.isEmpty(param)) ? uri : uri.buildUpon().appendEncodedPath(param).build();
         URL url = new URL(uri.toString());
         HttpURLConnection urlConnection = getHttpUrlConnection(url);
         urlConnection.setRequestMethod(HTTP_GET);
         try {
-            InputStream in = urlConnection.getInputStream(); 
+            InputStream in = urlConnection.getInputStream();
             bundle = copyStreamToBundle(in, bundle);
             in.close();
             bundle.putInt(SERVICE_RESPONSE_CODE, urlConnection.getResponseCode());
@@ -63,7 +65,7 @@ public class SyncService extends IntentService {
     }
 
     private Bundle doPostServiceCall(Uri uri, Bundle bundle, Intent intent) throws ProtocolException, IOException {
-        String param = intent.getStringExtra(IntentBuilder.SYNC_INTENT_EXTRA_PARAM);
+        String param = intent.getStringExtra(ServiceIntentBuilder.SYNC_INTENT_EXTRA_PARAM);
         URL url = new URL(uri.toString());
         HttpURLConnection urlConnection = getHttpUrlConnection(url);
         try {
@@ -84,22 +86,8 @@ public class SyncService extends IntentService {
     }
 
     private Bundle copyStreamToBundle(InputStream in, Bundle bundle) throws IOException {
-        bundle.putString(SERVICE_RESPONSE, getStringFromInputStream(new BufferedInputStream(in)));
+        bundle.putByteArray(SERVICE_RESPONSE,  IOUtils.toByteArray(in));
         return bundle;
-    }
-
-    private String getStringFromInputStream(InputStream in) throws IOException {     
-        final StringBuilder builder = new StringBuilder();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-        try{
-            String line;
-            while ((line = reader.readLine()) != null) {
-                builder.append(line).append("\n");
-            }
-            return builder.toString();
-        } finally {
-            reader.close();
-        }
     }
 
     private HttpURLConnection getHttpUrlConnection(URL url) throws IOException, ProtocolException {
@@ -121,7 +109,7 @@ public class SyncService extends IntentService {
             long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
             File httpCacheDir = new File(getCacheDir(), "http");
             Class.forName("android.net.http.HttpResponseCache").getMethod("install", File.class, long.class)
-            .invoke(null, httpCacheDir, httpCacheSize);
+                    .invoke(null, httpCacheDir, httpCacheSize);
         } catch (Exception httpResponseCacheNotAvailable) {
             // Reflection for <4.0
         }
@@ -129,8 +117,8 @@ public class SyncService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        final ResultReceiver receiver = intent.getParcelableExtra(IntentBuilder.SYNC_INTENT_EXTRA_RECEIVER);
-        int serviceType = intent.getIntExtra(IntentBuilder.SYNC_INTENT_EXTRA_SERVICE_TYPE, 0);
+        final ResultReceiver receiver = intent.getParcelableExtra(ServiceIntentBuilder.SYNC_INTENT_EXTRA_RECEIVER);
+        int serviceType = intent.getIntExtra(ServiceIntentBuilder.SYNC_INTENT_EXTRA_SERVICE_TYPE, 0);
         Uri uri = intent.getData();
         try {
             Bundle response = doServiceCall(uri, serviceType, new Bundle(), intent);

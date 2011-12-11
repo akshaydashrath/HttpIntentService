@@ -1,33 +1,38 @@
 package com.akshay.simplehttp;
 
-import org.codehaus.jackson.JsonNode;
+import java.io.IOException;
 
-import com.akshay.simplehttp.service.IntentBuilder;
 import com.akshay.simplehttp.service.ResultHandler;
 import com.akshay.simplehttp.service.SyncService;
+import com.akshay.simplehttp.service.builders.ServiceIntentBuilder;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 
 public class TestActivity extends Activity {
 
     // private static final String URL =
     // "https://api.twitter.com/1/statuses/public_timeline.json?count=3&include_entities=true";
+    
+    private static final String URL = "http://www.android.com/media/wallpaper/gif/android_logo.gif";
+    
+    private ImageView image; 
 
-    private ResultHandler resultHandler = new ResultHandler(null) {
+    private ResultHandler resultHandler = new ResultHandler() {
 
         @Override
-        public void onSuccess(JsonNode jsonNode) {
-            Log.i("XXX", "Success! = " + jsonNode);
+        public void onSuccess(byte[] result) throws IOException {
+            Log.i("XXX", "Success! = " + getStringFromArray(result));
+            image.setImageBitmap(getBitmap(result));
         }
 
         @Override
-        public void onError(JsonNode jsonNode) {
-            Log.i("XXX", "Error = " + jsonNode);
-
+        public void onError(byte[] result) {
+            Log.i("XXX", "Error = " + getStringFromArray(result));
         }
 
         @Override
@@ -37,13 +42,16 @@ public class TestActivity extends Activity {
 
     };
 
-    @Override
+
+
+      @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        Uri uri = Uri.parse("https://api.twitter.com/1/statuses/public_timeline.json");
-        Intent intent = new IntentBuilder(this).setData(uri).setHttpType(SyncService.SERVICE_TYPE_GET)
-                .withParam("count", "3").withParam("include_entities", "true")
+        image  = (ImageView)findViewById(R.id.image);
+        Uri uri = Uri.parse(URL);
+        Intent intent = new ServiceIntentBuilder(this).setData(uri).setHttpType(SyncService.SERVICE_TYPE_GET)
+               // .withParam("count", "3").withParam("include_entities", "true")
                 .setResultReceiver(resultHandler.getResultReceiver()).build();
         startService(intent);
     }

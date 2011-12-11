@@ -1,6 +1,8 @@
-package com.akshay.simplehttp.service;
+package com.akshay.simplehttp.service.builders;
 
 import java.net.URLEncoder;
+
+import com.akshay.simplehttp.service.SyncService;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,7 +10,7 @@ import android.net.Uri;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
 
-public class IntentBuilder {
+public class ServiceIntentBuilder {
 
 
     public static final String SYNC_INTENT_EXTRA_RECEIVER = "sync_intent_extra_receiver";
@@ -17,21 +19,21 @@ public class IntentBuilder {
 
     private final Intent intent;
 
-    public IntentBuilder(Activity activity){
+    public ServiceIntentBuilder(Activity activity){
         intent = new Intent(activity, SyncService.class);
     }
-
-    public IntentBuilder setHttpType(int type){
+    
+    public ServiceIntentBuilder setHttpType(int type){
         intent.putExtra(SYNC_INTENT_EXTRA_SERVICE_TYPE, type);
         return this;
     }
 
-    public IntentBuilder setResultReceiver(ResultReceiver receiver){
+    public ServiceIntentBuilder setResultReceiver(ResultReceiver receiver){
         intent.putExtra(SYNC_INTENT_EXTRA_RECEIVER, receiver);
         return this;
     }
 
-    public IntentBuilder withParam(String key, String value){
+    public ServiceIntentBuilder withParam(String key, String value){
         try{
             String extra = intent.getStringExtra(SYNC_INTENT_EXTRA_PARAM);
             if (TextUtils.isEmpty(extra)){
@@ -46,7 +48,7 @@ public class IntentBuilder {
         return this;
     }
 
-    public IntentBuilder setData(Uri uri){
+    public ServiceIntentBuilder setData(Uri uri){
         intent.setData(uri);
         return this;
     }

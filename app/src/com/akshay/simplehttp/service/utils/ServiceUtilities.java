@@ -1,4 +1,4 @@
-package com.akshay.simplehttp.service;
+package com.akshay.simplehttp.service.utils;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
