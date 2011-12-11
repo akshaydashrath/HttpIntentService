@@ -173,12 +173,14 @@ public class SyncService extends IntentService {
                         } else {
                             callback.isNetworkAvailable(false);
                         }
+                        urlc.disconnect();
                     } catch (IOException e) {
                         callback.isNetworkAvailable(false);
                     }
                 } else {
                     callback.isNetworkAvailable(false);
                 }
+
             }
         }).start();
     }
