@@ -2,7 +2,7 @@ package com.akshay.simplehttp.service;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-public class ServiceUtility {
+public class ServiceUtilities {
 
     private static ObjectMapper objectMapper;
 
