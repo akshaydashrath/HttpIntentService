@@ -68,10 +68,10 @@ public class TestActivity extends Activity {
         text = (TextView) findViewById(R.id.text);
         Uri textUri = Uri.parse(URL);
         Uri imageUri = Uri.parse(IMAGE_URL);
-        Intent intent = new ServiceIntentBuilder(this).setData(textUri).setHttpType(SyncService.SERVICE_TYPE_GET)
+        Intent intent = new ServiceIntentBuilder(getApplication()).setData(textUri).setHttpType(SyncService.SERVICE_TYPE_GET)
                 .withParam("count", "3").withParam("include_entities", "true").setResultReceiver(textHandler).build();
         startService(intent);
-        Intent intent2 = new ServiceIntentBuilder(this).setData(imageUri).setHttpType(SyncService.SERVICE_TYPE_GET)
+        Intent intent2 = new ServiceIntentBuilder(getApplication()).setData(imageUri).setHttpType(SyncService.SERVICE_TYPE_GET)
                 .setResultReceiver(imageHandler).build();
         startService(intent2);
     }

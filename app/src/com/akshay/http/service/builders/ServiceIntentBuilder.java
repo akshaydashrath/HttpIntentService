@@ -4,7 +4,7 @@ import java.net.URLEncoder;
 
 import com.akshay.http.service.SyncService;
 
-import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.ResultReceiver;
@@ -12,15 +12,14 @@ import android.text.TextUtils;
 
 public class ServiceIntentBuilder {
 
-
     public static final String SYNC_INTENT_EXTRA_RECEIVER = "sync_intent_extra_receiver";
     public static final String SYNC_INTENT_EXTRA_SERVICE_TYPE = "sync_intent_extrac_service_type";
     public static final String SYNC_INTENT_EXTRA_PARAM = "sync_intent_extra_param";
 
     private final Intent intent;
 
-    public ServiceIntentBuilder(Activity activity){
-        intent = new Intent(activity, SyncService.class);
+    public ServiceIntentBuilder(Application app){
+        intent = new Intent(app.getApplicationContext(), SyncService.class);
     }
     
     public ServiceIntentBuilder setHttpType(int type){
