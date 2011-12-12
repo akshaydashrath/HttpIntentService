@@ -129,7 +129,7 @@ public class SyncService extends IntentService {
         final ResultReceiver receiver = intent.getParcelableExtra(ServiceIntentBuilder.SYNC_INTENT_EXTRA_RECEIVER);
         final int serviceType = intent.getIntExtra(ServiceIntentBuilder.SYNC_INTENT_EXTRA_SERVICE_TYPE, 0);
         final Uri uri = intent.getData();
-        hasActiveInternetConnection(new NetworkAvailabilityCallback() {
+        isNetworkAvailable(new NetworkAvailabilityCallback() {
             @Override
             public void isNetworkAvailable(boolean flag) {
                 if (flag) {
@@ -158,37 +158,10 @@ public class SyncService extends IntentService {
         }
     }
 
-    private void hasActiveInternetConnection(final NetworkAvailabilityCallback callback) {
-        new Thread(new Runnable() {
-            public void run() {
-                if (isNetworkAvailable()) {
-                    try {
-                        HttpURLConnection urlc = (HttpURLConnection) (new URL(TEST_URL).openConnection());
-                        urlc.setRequestProperty("User-Agent", "Test");
-                        urlc.setRequestProperty("Connection", "close");
-                        urlc.setConnectTimeout(CONN_TIMEOUT);
-                        urlc.connect();
-                        if (urlc.getResponseCode() == HttpStatusCodes.OK) {
-                            callback.isNetworkAvailable(true);
-                        } else {
-                            callback.isNetworkAvailable(false);
-                        }
-                        urlc.disconnect();
-                    } catch (IOException e) {
-                        callback.isNetworkAvailable(false);
-                    }
-                } else {
-                    callback.isNetworkAvailable(false);
-                }
-
-            }
-        }).start();
-    }
-
-    private boolean isNetworkAvailable() {
+    private void isNetworkAvailable(NetworkAvailabilityCallback networkAvailabilityCallback) {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null;
+        networkAvailabilityCallback.isNetworkAvailable((activeNetworkInfo != null));
     }
 
 }
