@@ -28,7 +28,7 @@ public class TestHttpIntentServiceActivity extends Activity {
 
     private ResultHandler textHandler = new ResultHandler() {
         @Override
-        public void onSuccess(byte[] array) throws IOException {
+        public void onSuccess(int resultCode, byte[] array) throws IOException {
             text.setText(getStringFromArray(array));
         }
 
@@ -46,7 +46,7 @@ public class TestHttpIntentServiceActivity extends Activity {
 
     private ResultHandler imageHandler = new ResultHandler() {
         @Override
-        public void onSuccess(byte[] array) throws IOException {
+        public void onSuccess(int resultCode, byte[] array) throws IOException {
             Bitmap bitmap = getBitmap(array).get();
             image.setImageBitmap(bitmap);
         }

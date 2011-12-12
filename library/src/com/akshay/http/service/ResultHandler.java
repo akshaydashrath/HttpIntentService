@@ -29,7 +29,7 @@ public abstract class ResultHandler extends ResultReceiver {
         try {
             switch (resultCode) {
             case HttpStatusCodes.OK:
-                onSuccess(resultData.getByteArray(SyncService.SERVICE_RESPONSE));
+                onSuccess(resultCode, resultData.getByteArray(SyncService.SERVICE_RESPONSE));
                 break;
             default:
                 onError(resultCode, resultData.getByteArray(SyncService.SERVICE_RESPONSE));
@@ -56,7 +56,7 @@ public abstract class ResultHandler extends ResultReceiver {
         return new WeakReference<Bitmap>(BitmapFactory.decodeByteArray(result, 0, result.length));
     }
     
-    public abstract void onSuccess(byte[] bs) throws Exception;
+    public abstract void onSuccess(int resultCode, byte[] bs) throws Exception;
 
     public abstract void onError(int resultCode, byte[] bs) throws Exception;
 
