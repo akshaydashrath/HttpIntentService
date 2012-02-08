@@ -1,7 +1,5 @@
 package com.akshay.http.service.utils;
 
-
-
 public class ServiceUtilities {
     
     public interface NetworkAvailabilityCallback{

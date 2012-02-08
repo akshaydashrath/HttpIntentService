@@ -35,8 +35,8 @@ public class SyncService extends IntentService {
     private static final String HTTP_POST = "POST";
     private static final String HTTP_GET = "GET";
 
-    private static final int CONN_TIMEOUT = 15000;
-    private static final int READ_TIMEOUT = 10000;
+    private static final int CONN_TIMEOUT = Settings.CONN_TIMEOUT;
+    private static final int READ_TIMEOUT = Settings.READ_TIMEOUT;
 
     public static final String SERVICE_RESPONSE = "service_response";
     private static final String SERVICE_RESPONSE_CODE = "service_response_code";

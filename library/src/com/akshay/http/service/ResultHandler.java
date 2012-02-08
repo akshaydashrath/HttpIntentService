@@ -38,7 +38,7 @@ public abstract class ResultHandler extends ResultReceiver {
     public String getStringFromArray(byte[] array) {
         return new String(array);
     }
-
+    
     public InputStream getInputStream(byte[] array) {
         return IOUtils.toInputStream(getStringFromArray(array));
     }
