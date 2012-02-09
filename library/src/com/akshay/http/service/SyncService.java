@@ -102,6 +102,7 @@ public class SyncService extends IntentService {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setReadTimeout(READ_TIMEOUT);
         urlConnection.setConnectTimeout(CONN_TIMEOUT);
+        urlConnection.setRequestProperty("Content-Type", "text/plain; charset=utf-8");
         urlConnection.setInstanceFollowRedirects(true);
         return urlConnection;
     }
