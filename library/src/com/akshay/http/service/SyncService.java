@@ -58,7 +58,7 @@ public class SyncService extends IntentService {
     private Bundle doGetServiceCall(Uri uri, Bundle bundle, Intent intent) throws IOException {
         String param = intent.getStringExtra(ServiceIntentBuilder.SYNC_INTENT_EXTRA_PARAM);
         String sUrl = (TextUtils.isEmpty(param)) ? uri.toString() : uri.toString()+param;
-        URL url = new URL(uri.toString());
+        URL url = new URL(sUrl);
         HttpURLConnection urlConnection = getHttpUrlConnection(url);
         urlConnection.setRequestMethod(HTTP_GET);
         try {
