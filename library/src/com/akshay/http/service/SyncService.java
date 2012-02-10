@@ -24,6 +24,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
+import android.util.Log;
 
 public class SyncService extends IntentService {
 
@@ -56,7 +57,7 @@ public class SyncService extends IntentService {
 
     private Bundle doGetServiceCall(Uri uri, Bundle bundle, Intent intent) throws IOException {
         String param = intent.getStringExtra(ServiceIntentBuilder.SYNC_INTENT_EXTRA_PARAM);
-        uri = (TextUtils.isEmpty(param)) ? uri : uri.buildUpon().appendEncodedPath(param).build();
+        String sUrl = (TextUtils.isEmpty(param)) ? uri.toString() : uri.toString()+param;
         URL url = new URL(uri.toString());
         HttpURLConnection urlConnection = getHttpUrlConnection(url);
         urlConnection.setRequestMethod(HTTP_GET);
