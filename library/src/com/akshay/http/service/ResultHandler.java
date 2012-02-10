@@ -24,10 +24,17 @@ public abstract class ResultHandler extends ResultReceiver {
         try {
             switch (resultCode) {
             case HttpStatusCodes.OK:
-                onSuccess(resultCode, resultData.getByteArray(SyncService.SERVICE_RESPONSE));
+                onSuccess(resultCode, resultData.getByteArray(HttpIntentService.SERVICE_RESPONSE));
                 break;
+            case HttpStatusCodes.FORBIDDEN:
+            	onError(resultCode, "Forbidded".getBytes());
+            	break;
             default:
-                onError(resultCode, resultData.getByteArray(SyncService.SERVICE_RESPONSE));
+            	if (resultData==null){
+            		onError(resultCode, "unkown error".getBytes());
+            	} else {
+            		onError(resultCode, resultData.getByteArray(HttpIntentService.SERVICE_RESPONSE));
+            	}
                 break;
             }
         } catch (Exception e) {

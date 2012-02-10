@@ -16,7 +16,7 @@
         android:label="@string/app_name" >
          <service
             android:enabled="true"
-            android:name=".service.SyncService" />
+            android:name=".service.HttpIntentService" />
     </application>
 
 </manifest>

@@ -2,7 +2,7 @@ package com.akshay.http.service.builders;
 
 import java.net.URLEncoder;
 
-import com.akshay.http.service.SyncService;
+import com.akshay.http.service.HttpIntentService;
 
 import android.app.Application;
 import android.content.Intent;
@@ -19,7 +19,7 @@ public class ServiceIntentBuilder {
     private final Intent intent;
 
     public ServiceIntentBuilder(Application app){
-        intent = new Intent(app.getApplicationContext(), SyncService.class);
+        intent = new Intent(app.getApplicationContext(), HttpIntentService.class);
     }
     
     public ServiceIntentBuilder setHttpType(int type){
